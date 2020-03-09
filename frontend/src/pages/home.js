@@ -42,7 +42,7 @@ import NavBar from "../components/navbar";
 import Highlight from "../components/highlight";
 
 import { connect } from "react-redux";
-import { getTickets } from "../_actions/ticket";
+import { getTickets } from "../_actions/tickets";
 import { getStations } from "../_actions/station";
 import { getSearch } from "../_actions/search";
 import { addCarts, addReturnCart } from "../_actions/carts";
@@ -154,7 +154,6 @@ class Home extends Component {
 
     console.log("dataa", data);
 
-
     const query = queryString.stringify(data);
     console.log("query", query);
     this.props.getSearch(query);
@@ -189,7 +188,7 @@ class Home extends Component {
       };
 
       const query = queryString.stringify(data);
-    //  console.log("query pulang", query);
+      //  console.log("query pulang", query);
       const res = await this.props.getSearch(query);
       //console.log(res);
       if (res.action.type === "GET_SEARCH_FULFILLED") {
@@ -617,48 +616,49 @@ class Home extends Component {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {tickets.data.map(row => (
-                            <TableRow key={row.id}>
-                              <TableCell component="th" scope="row">
-                                <Typography variant="subtitle2">
-                                  {row.train.name}
-                                </Typography>
-                                <Typography variant="caption">
-                                  {row.class.name}
-                                </Typography>
-                              </TableCell>
-                              {/* <TableCell align="right">{row.startStation}</TableCell> */}
-                              <TableCell align="right">
-                                <Typography variant="subtitle2">
-                                  {moment(row.startTime)
-                                    .local()
-                                    .format("YYYY-MM-DD HH:mm:ss")}
-                                </Typography>
-                                <Typography variant="caption">
-                                  {`${row.startStation.name} - ${row.startStation.city} (${row.startStation.code})`}
-                                </Typography>
-                              </TableCell>
-                              <TableCell align="right">
-                                <Typography variant="subtitle2">
-                                  {moment(row.arrivalTime)
-                                    .local()
-                                    .format("YYYY-MM-DD HH:mm:ss")}
-                                </Typography>
-                                <Typography variant="caption">
-                                  {`${row.destinationStation.name} - ${row.destinationStation.city} (${row.destinationStation.code})`}
-                                </Typography>
-                              </TableCell>
-                              <TableCell align="right">
-                                {getDuration(row.startTime, row.arrivalTime)}
-                                {/* 5j 05m */}
-                                {/* {moment().format("YYYY-MM-DD")} */}
-                                {/* {duration(row.arrivalTime, row.startTime)} */}
-                              </TableCell>
-                              <TableCell align="right">
-                                {toRupiah(row.price)}
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                          {tickets.data &&
+                            tickets.data.map(row => (
+                              <TableRow key={row.id}>
+                                <TableCell component="th" scope="row">
+                                  <Typography variant="subtitle2">
+                                    {row.train.name}
+                                  </Typography>
+                                  <Typography variant="caption">
+                                    {row.class.name}
+                                  </Typography>
+                                </TableCell>
+                                {/* <TableCell align="right">{row.startStation}</TableCell> */}
+                                <TableCell align="right">
+                                  <Typography variant="subtitle2">
+                                    {moment(row.startTime)
+                                      .local()
+                                      .format("YYYY-MM-DD HH:mm:ss")}
+                                  </Typography>
+                                  <Typography variant="caption">
+                                    {`${row.startStation.name} - ${row.startStation.city} (${row.startStation.code})`}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  <Typography variant="subtitle2">
+                                    {moment(row.arrivalTime)
+                                      .local()
+                                      .format("YYYY-MM-DD HH:mm:ss")}
+                                  </Typography>
+                                  <Typography variant="caption">
+                                    {`${row.destinationStation.name} - ${row.destinationStation.city} (${row.destinationStation.code})`}
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="right">
+                                  {getDuration(row.startTime, row.arrivalTime)}
+                                  {/* 5j 05m */}
+                                  {/* {moment().format("YYYY-MM-DD")} */}
+                                  {/* {duration(row.arrivalTime, row.startTime)} */}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {toRupiah(row.price)}
+                                </TableCell>
+                              </TableRow>
+                            ))}
                         </TableBody>
                       </Table>
                     </TableContainer>
@@ -677,7 +677,7 @@ class Home extends Component {
 
 const mapStateToProps = state => {
   return {
-    tickets: state.ticket,
+    tickets: state.tickets,
     stations: state.station,
     search: state.search
     // carts: state.carts

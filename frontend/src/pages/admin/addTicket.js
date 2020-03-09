@@ -16,6 +16,7 @@ import {
   MuiPickersUtilsProvider,
   DateTimePicker
 } from "@material-ui/pickers";
+import Alert from "@material-ui/lab/Alert";
 
 import { connect } from "react-redux";
 import { addTicket } from "../../_actions/ticket";
@@ -43,6 +44,7 @@ class AddTicket extends React.Component {
 
     //const newdate = new Date()
     this.state = {
+      message: "",
       train_id: null,
       class_id: null,
       dateStart: null,
@@ -61,6 +63,9 @@ class AddTicket extends React.Component {
     this.props.getClasses();
   }
   handleAddTicket = async e => {
+    this.setState({
+      message: ""
+    });
     const data = {
       train_id: this.state.train_id,
       class_id: this.state.class_id,
@@ -72,11 +77,13 @@ class AddTicket extends React.Component {
       price: this.state.price,
       qty: this.state.qty
     };
-    console.log("data", data);
+    //console.log("data", data);
     const res = await this.props.addTicket(data);
+    //console.log("rexxxxx",res);
     if (res.action.type === "ADD_TICKET_FULFILLED") {
       //CALL ALERT
       this.setState({
+        message: "Berhasil menambahkan tiket baru",
         train_id: null,
         class_id: null,
         dateStart: null,
@@ -91,7 +98,9 @@ class AddTicket extends React.Component {
   };
 
   render() {
-    const { classes, user, stations, trains, class_train } = this.props;
+    const { classes, user, stations, trains, class_train, ticket } = this.props;
+
+    const { loading, error, data } = ticket;
 
     if (user.data && user.data.level == "user")
       return <Redirect to="/"></Redirect>;
@@ -108,6 +117,12 @@ class AddTicket extends React.Component {
               >
                 <b>Tambah Tiket {this.state.train_id}</b>
               </Typography>
+
+              {this.state.message && (
+                <Alert severity="success">{this.state.message}</Alert>
+              )}
+
+              {error && <Alert severity="error">{error}</Alert>}
 
               <Autocomplete
                 options={trains.data}
@@ -294,7 +309,8 @@ const mapStateToProps = state => ({
   user: state.user,
   trains: state.train,
   stations: state.station,
-  class_train: state.class_ticket
+  class_train: state.class_ticket,
+  ticket: state.ticket
 });
 
 const mapDispatchToProps = dispatch => ({

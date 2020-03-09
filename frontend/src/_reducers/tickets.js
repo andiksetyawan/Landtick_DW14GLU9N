@@ -1,4 +1,4 @@
-import { GET_TICKETS, RESET_TICKET, ADD_TICKET } from "../config/constants";
+import { GET_TICKETS, RESET_TICKET } from "../config/constants";
 
 const initState = {
   data: null,
@@ -6,22 +6,22 @@ const initState = {
   error: null
 };
 
-const ticket = (state = initState, action) => {
+const tickets = (state = initState, action) => {
   switch (action.type) {
-    case `${ADD_TICKET}_PENDING`:
+    case `${GET_TICKETS}_PENDING`:
       return {
         ...state,
         loading: true,
         error: null
       };
-    case `${ADD_TICKET}_FULFILLED`:
+    case `${GET_TICKETS}_FULFILLED`:
       return {
         ...state,
         data: action.payload,
         loading: false,
         error: null
       };
-    case `${ADD_TICKET}_REJECTED`:
+    case `${GET_TICKETS}_REJECTED`:
       return {
         ...state,
         loading: false,
@@ -36,4 +36,4 @@ const ticket = (state = initState, action) => {
   }
 };
 
-export default ticket;
+export default tickets;

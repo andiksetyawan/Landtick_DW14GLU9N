@@ -13,6 +13,8 @@ import carts from "../_reducers/carts";
 import order from "../_reducers/order";
 import orders from "../_reducers/orders";
 import detail_order from "../_reducers/detail_order";
+import tickets from "../_reducers/tickets";
+
 
 const reducers = combineReducers({
   auth,
@@ -25,7 +27,8 @@ const reducers = combineReducers({
   carts,
   order,
   orders,
-  detail_order
+  detail_order,
+  tickets
 });
 
 const store = createStore(reducers, applyMiddleware(promise, logger));
