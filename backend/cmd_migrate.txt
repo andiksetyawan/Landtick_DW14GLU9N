@@ -1,0 +1,55 @@
+npx sequelize db:create
+
+npx sequelize-cli model:generate --name user --attributes level:enum,name:string,email:string,password:string,address:string,phone:string,gender:enum
+
+
+npx sequelize-cli model:generate --name type --attributes name:string
+
+
+npx sequelize-cli model:generate --name train --attributes dateStart:DATEONLY,startStation:string,startTime:TIME,destinationStation:string,arrivalTime:TIME,price:integer,qty:integer,typeId:integer
+
+
+npx sequelize-cli model:generate --name match --attributes status:boolean,pet_id:integer,pet_liked:integer 
+npx sequelize-cli model:generate --name payment --attributes no_rek:string,proof_of_transfer:string,status:enum,user_id:integer
+
+
+//MATCH USER_ID mngkin tidak perlu
+
+edit dulu folder migrations.. relasi dll. baru next db:migrate
+
+npx sequelize-cli db:migrate train
+
+npx sequelize-cli seed:generate --name demo-user
+
+npx sequelize-cli db:seed --seed 20200303094724-demo-type.js
+
+npx sequelize db:seed:all
+
+bcrypt
+password:1234
+
+$2b$10$dpn1IZOfxPZhYFoGvftZcOzo140hFIwgHNPWyJqypVHc7VJqj7cRG
+
+$2b$10$Vqn5wxfPA9c3OHECuOoYOOh.5X9JUlef5xIH1EbnanblgkxXHY0y.
+
+
+
+  var start = moment
+    .tz("Asia/Jakarta")
+    .startOf("day")
+    .utc(); //start today indonesia +7 to UTC
+
+  var end = moment
+    .tz("Asia/Jakarta")
+    .endOf("day")
+    .utc(); //end today indonesia +7 to UTC
+
+  var startx = moment(start_time)
+    .tz("Asia/Jakarta")
+    .startOf("day")
+    .utc(); //start day indonesia +7 to UTC by DATE INPUT
+
+  var endx = moment(start_time)
+    .tz("Asia/Jakarta")
+    .endOf("day")
+    .utc(); //start day indonesia +7 to UTC by DATE INPUT

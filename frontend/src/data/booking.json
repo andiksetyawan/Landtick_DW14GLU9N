@@ -1,0 +1,15 @@
+{
+  "passengers": [
+    {
+      "name": "abc",
+      "email": "asjd",
+      "address": "asfda",
+      "id_card": "12344"
+    }
+  ],
+  "detail_order": [
+    { "id_ticket": 1, "qty": 2 },
+    { "id_ticket": 3, "qty": 2 }
+  ],
+  "total": 900000
+}
