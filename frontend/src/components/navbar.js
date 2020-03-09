@@ -37,7 +37,8 @@ class NavBar extends React.Component {
   }
   async componentDidMount() {
     const res = await this.props.getAuth();
-    if (res.action.type === "GET_AUTH_FULFILLED") {
+    console.log("ress nav",res);
+    if (res.action&&res.action.type === "GET_AUTH_FULFILLED") {
       this.props.getUser();
     }
   }
