@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
 import { connect } from "react-redux";
-import { getOrders } from "../_actions/order";
+import { getOrders } from "../_actions/orders";
 
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import LensIcon from "@material-ui/icons/Lens";
@@ -122,6 +122,7 @@ class MyTicket extends Component {
     // moment().format('LLLL');
   }
   componentDidMount() {
+    //this.props.resetOrder();
     this.props.getOrders();
   }
 
@@ -366,10 +367,11 @@ class MyTicket extends Component {
 }
 
 const mapStateToProps = state => ({
-  orders: state.order
+  orders: state.orders
 });
 
 const mapDispatchToProps = dispatch => ({
+  //resetOrder: () => dispatch(resetOrder()),
   getOrders: () => dispatch(getOrders())
 });
 

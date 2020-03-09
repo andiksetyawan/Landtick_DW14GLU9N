@@ -1,9 +1,4 @@
-import {
-  ADD_ORDER,
-  GET_ORDER,
-  UPDATE_ORDER,
-  RESET_ORDER
-} from "../config/constants";
+import { GET_ORDERS, RESET_ORDERS } from "../config/constants";
 
 const initState = {
   data: null,
@@ -11,28 +6,22 @@ const initState = {
   error: null
 };
 
-const order = (state = initState, action) => {
+const orders = (state = initState, action) => {
   switch (action.type) {
-    case `${ADD_ORDER}_PENDING`:
-    case `${GET_ORDER}_PENDING`:
-    case `${UPDATE_ORDER}_PENDING`:
+    case `${GET_ORDERS}_PENDING`:
       return {
         ...state,
         loading: true,
         error: null
       };
-    case `${ADD_ORDER}_FULFILLED`:
-    case `${GET_ORDER}_FULFILLED`:
-    case `${UPDATE_ORDER}_FULFILLED`:
+    case `${GET_ORDERS}_FULFILLED`:
       return {
         ...state,
         data: action.payload,
         loading: false,
         error: null
       };
-    case `${ADD_ORDER}_REJECTED`:
-    case `${GET_ORDER}_REJECTED`:
-    case `${UPDATE_ORDER}_REJECTED`:
+    case `${GET_ORDERS}_REJECTED`:
       return {
         ...state,
         loading: false,
@@ -40,7 +29,7 @@ const order = (state = initState, action) => {
           ? action.payload.response.data.message
           : action.payload.message
       };
-    case RESET_ORDER:
+    case RESET_ORDERS:
       console.log("reset order reducer");
       return initState;
     default:
@@ -48,4 +37,4 @@ const order = (state = initState, action) => {
   }
 };
 
-export default order;
+export default orders;

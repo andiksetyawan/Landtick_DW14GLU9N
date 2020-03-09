@@ -1,7 +1,9 @@
 require("dotenv").config();
 
 const express = require("express");
-const cors = require("cors")
+const cors = require("cors");
+const path = require("path");
+
 const app = express();
 
 const port = process.env.PORT;
@@ -9,6 +11,8 @@ app.use(cors());
 const routes = require("./routers");
 
 app.use(express.json());
+
+app.use("/assets", express.static(path.join(__dirname, "public"))); //static file
 app.use("/api/v1", routes);
 
 app.use((req, res, next) => {
@@ -16,7 +20,7 @@ app.use((req, res, next) => {
   const status = 404;
   const message = "Endpoint Not Found";
   const data = {};
-  res.status(status).json({ success, message, data   });
+  res.status(status).json({ success, message, data });
 });
 
 // app.use((error, req, res, next) => {

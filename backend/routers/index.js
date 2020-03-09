@@ -35,5 +35,6 @@ router.get("/classes", class_ticket.shows);
 router.post("/order", auth, order.create);
 router.get("/orders", auth, order.showsByUser); //myticket
 router.get("/order/:id", auth, order.show); //myticket
+router.post("/order/proof/:id", auth, order.updateProofTransfer); //myticket
 
 module.exports = router;

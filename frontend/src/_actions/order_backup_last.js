@@ -1,6 +1,7 @@
 import { API, setAuthToken } from "../config/api";
 import {
   ADD_ORDER,
+  GET_ORDERS,
   GET_ORDER,
   RESET_ORDER,
   UPDATE_ORDER
@@ -14,6 +15,21 @@ export const addOrder = data => {
     payload: async () => {
       setAuthToken(token);
       const res = await API.post("/order", data);
+      console.log("ressss add order", res.data.data);
+      return res.data.data;
+    }
+  };
+};
+
+export const getOrders = () => {
+  console.log("masuk GET Orders / myticket actions");
+  const token = localStorage.getItem("token");
+  console.log("token", token);
+  return {
+    type: GET_ORDERS,
+    payload: async () => {
+      setAuthToken(token);
+      const res = await API.get("/orders");
       console.log("ressss add order", res.data.data);
       return res.data.data;
     }
@@ -35,7 +51,7 @@ export const getOrder = id => {
   };
 };
 
-export const updateProofOrder = (image, id) => {
+export const updateProofOrder = (image,id) => {
   console.log("masuk upda proof Order actions", image);
   const token = localStorage.getItem("token");
   //console.log("token",token);

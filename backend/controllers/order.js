@@ -9,6 +9,8 @@ const Train = models.train;
 const Class = models.class;
 const Station = models.station;
 
+const Upload = require("../utils/upload");
+
 exports.create = async (req, res) => {
   //const  user = req.body;
   console.log("body", req.body);
@@ -27,7 +29,7 @@ exports.create = async (req, res) => {
             throw new Error("stock");
           } else {
             const data_order = {
-              invoice: "1234INV11111111111111",
+              invoice: "1234INV1111111111111111",
               user_id: 1, /////GANTI
               total: 600000
             };
@@ -172,9 +174,8 @@ exports.show = async (req, res) => {
           //  attributes: ["id", "name"]
         },
         {
-          model: User
-          // as: "user"
-          //  attributes: ["id", "name", "address", "phone"]
+          model: User,
+          attributes: ["id", "username", "name", "email", "address"]
         },
         {
           model: Passenger
@@ -221,6 +222,7 @@ exports.showsByUser = async (req, res) => {
   console.log("req", req.user);
   try {
     const orders = await Order.findAll({
+      order: [["createdAt", "DESC"]],
       where: { user_id: req.user },
       include: [
         {
@@ -296,6 +298,105 @@ exports.showsByUser = async (req, res) => {
     res.status(404).json({
       success: false,
       message: "Load Ticket data failed, something went wrong",
+      data: {}
+    });
+  }
+};
+
+// const multer = require("multer");
+
+// const storage = multer.diskStorage({
+//   destination: (req, res, cb) => {
+//     cb(null, "../public/img");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, file.fieldname + "-" + Date.now() + file.originalname);
+//   }
+// });
+
+//const upload = multer({ storage: storage }).single("image");
+
+exports.updateProofTransfer = (req, res) => {
+  try {
+    const { id } = req.params;
+    const upload = Upload.single("image");
+    upload(req, res, async err => {
+      if (err || !req.file) {
+        // console.log("errrrrr ===========", err);
+        throw new err();
+      }
+      console.log("sucesss", res, req);
+      const order = await Order.update(
+        {
+          proof_transfer: req.file.filename,
+          status: "checking"
+        },
+        { where: { id } }
+      );
+      if (order) {
+        const orderq = await Order.findOne({
+          where: { id },
+          include: [
+            {
+              model: DetailOrder,
+              include: [
+                {
+                  model: Ticket,
+                  include: [
+                    {
+                      model: Train
+                    },
+                    {
+                      model: Class
+                    },
+                    {
+                      model: Station,
+                      as: "startStation"
+                    },
+                    {
+                      model: Station,
+                      as: "destinationStation"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              model: User,
+              attributes: ["id", "username", "name", "email", "address"]
+            },
+            {
+              model: Passenger
+            }
+          ]
+        });
+        if (orderq) {
+          res.json({
+            success: true,
+            message: "Order data was successfully update",
+            data: orderq
+          });
+        } else {
+          res.status(404).json({
+            success: false,
+            message: "Order data was successfully update, but something wrong",
+            data: {}
+          });
+        }
+      } else {
+        res.status(500).json({
+          success: false,
+          message: "something went wrong",
+          data: {}
+        });
+      }
+    });
+  } catch (error) {
+    console.log("error", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Update order data failed, something went wrong",
       data: {}
     });
   }

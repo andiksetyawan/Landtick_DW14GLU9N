@@ -194,7 +194,7 @@ class Home extends Component {
         this.setState({ step: 1 });
       }
     } else {
-      // this.props.history.push("/booking");
+      this.props.history.push("/booking");
       console.log("TIDAK PP PPP PP PP", this.state.pp);
     }
   };

@@ -11,6 +11,7 @@ import class_ticket from "../_reducers/class";
 import search from "../_reducers/search";
 import carts from "../_reducers/carts";
 import order from "../_reducers/order";
+import orders from "../_reducers/orders";
 
 const reducers = combineReducers({
   auth,
@@ -21,7 +22,8 @@ const reducers = combineReducers({
   class_ticket,
   search,
   carts,
-  order
+  order,
+  orders
 });
 
 const store = createStore(reducers, applyMiddleware(promise, logger));

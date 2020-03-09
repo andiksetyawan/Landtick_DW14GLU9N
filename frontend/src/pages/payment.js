@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
 
@@ -25,13 +26,14 @@ import {
   TableHead,
   TableRow,
   Grid,
-  Button
+  Button,
+  Divider
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
 import NavBar from "../components/navbar";
 
-import { getOrder, resetOrder } from "../_actions/order";
+import { getOrder, updateProofOrder } from "../_actions/order";
 
 const styles = theme => ({
   container: {
@@ -100,12 +102,37 @@ const startStepIcons = () => <RadioButtonUncheckedIcon color="primary" />;
 const endStepIcons = () => <LensIcon color="primary" />;
 
 class Payment extends Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      image: null,
+      preview: null
+    };
+  }
+  async componentDidMount() {
     const { id } = this.props.match.params;
     console.log("didid", id);
-    this.props.resetOrder();
-    this.props.getOrder(id);
+    //this.props.resetOrder();
+    const res = await this.props.getOrder(id);
+    if (res.action.type == "GET_ORDER_FULFILLED") {
+      let path_img = null;
+      if (this.props.order.data.proof_transfer) {
+        path_img =
+          "http://localhost:5000/assets/img/" +
+          this.props.order.data.proof_transfer;
+      }
+      this.setState({ preview: path_img });
+    }
   }
+
+  handleSavePayment = async e => {
+    const { id } = this.props.match.params;
+    const res = await this.props.updateProofOrder(this.state.image, id);
+    if (res.action.type == "UPDATE_ORDER_FULFILLED") {
+      //show alert klik myticket
+      // this.props.history.push("/myticket")
+    }
+  };
 
   render() {
     const { classes, match, order } = this.props;
@@ -126,22 +153,38 @@ class Payment extends Component {
         <NavBar />
         <Container className={classes.container}>
           <Typography style={{ margin: "10px 0" }} variant="h5">
-            <b>Tiket Saya</b>
+            <b>Pembayaran Tiket</b>
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={8}>
               <Paper>
-                <Alert
-                  severity="warning"
-                  variant="outlined"
-                  style={{ marginBottom: 10 }}
-                >
-                  Silahkan melakukan melakukan pembayaran melalui M-Banking
-                  E-Banking dan ATM ke nomor rekening berikut ini:
-                  <br />
-                  <br />
-                  No. Rek : <b>00812881828 BCA A/N Andik Setyawan</b>
-                </Alert>
+                {order.data && order.data.status === "pending" && (
+                  <Alert
+                    severity="warning"
+                    variant="outlined"
+                    style={{ marginBottom: 10 }}
+                  >
+                    Silahkan melakukan melakukan pembayaran melalui M-Banking
+                    E-Banking dan ATM ke nomor rekening berikut ini:
+                    <br />
+                    <br />
+                    No. Rek : <b>00812881828 BCA A/N Andik Setyawan</b>
+                  </Alert>
+                )}
+
+                {order.data && order.data.status === "checking" && (
+                  <Alert
+                    severity="warning"
+                    variant="outlined"
+                    style={{ marginBottom: 10 }}
+                  >
+                    <b>
+                      Pembayaran anda dalam proses konfirmasi admin dalam 1x24
+                      jam. 
+                      <Link to="/myticket">Lihat daftar tiket saya.</Link>
+                    </b>
+                  </Alert>
+                )}
               </Paper>
               <Paper className={classes.paper}>
                 <div className={classes.logo}>landtick</div>
@@ -248,146 +291,191 @@ class Payment extends Component {
                       </div>
                     </div>
                   </Paper>
-                  <Button
-                    fullWidth
-                    style={{ marginTop: 20 }}
-                    variant="contained"
-                    color="primary"
-                  >
-                    Bayar Sekarang
-                  </Button>
+                  {order.data && order.data.status === "pending" && (
+                    <Button
+                      fullWidth
+                      style={{ marginTop: 20 }}
+                      variant="contained"
+                      color="primary"
+                      onClick={this.handleSavePayment}
+                    >
+                      Bayar Sekarang
+                    </Button>
+                  )}
                 </Grid>
                 <Grid item xs={4}>
                   <Paper className={classes.paper} style={{ padding: 10 }}>
                     <div
                       style={{
                         width: "100%",
-                        background:
-                          "url(https://via.placeholder.com/150?text=Foto)",
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
+                        backgroundColor: "gray",
+                        // background:
+                        //   "url(https://via.placeholder.com/150?text=Foto)",
+
                         minHeight: 100
                       }}
-                    ></div>
-                    <Button fullWidth variant="outlined" color="primary">
-                      Upload bukti transfer
-                    </Button>
+                    >
+                      {/* <span>Bukti Transfer</span> */}
+                      <img
+                        src={this.state.preview}
+                        alt="Bukti Transfer"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                    {order.data && order.data.status === "pending" && (
+                      <>
+                        <input
+                          accept="image/*"
+                          className={classes.input}
+                          id="upload-file"
+                          type="file"
+                          style={{
+                            display: "none"
+                          }}
+                          onChange={e => {
+                            this.setState({
+                              image: e.target.files[0],
+                              preview: URL.createObjectURL(e.target.files[0])
+                            });
+                          }}
+                        />
+                        <label htmlFor="upload-file">
+                          <Button
+                            fullWidth
+                            variant="outlined"
+                            color="primary"
+                            component="span"
+                          >
+                            Upload bukti transfer
+                          </Button>
+                        </label>
+                      </>
+                    )}
                   </Paper>
                 </Grid>
               </Grid>
             </Grid>
             <Grid item xs={4}>
-              {order.data &&
-                order.data.detail_orders &&
-                order.data.detail_orders.map((detail_order, i) => {
-                  return (
-                    <Paper key={detail_order.id} className={classes.side}>
-                      <div>
-                        <div style={{ flexGrow: 1 }}>
-                          <Typography variant="h6">
-                            <b>Kereta Api</b>
-                          </Typography>
+              <Paper className={classes.side}>
+                <div>
+                  <div style={{ flexGrow: 1 }}>
+                    <Typography variant="h6">
+                      <b>Kereta Api</b>
+                    </Typography>
+                    <div>
+                      {order.data && (
+                        <Typography display="inline" variant="subtitle2">
+                          {moment(order.data.createdAt)
+                            .local()
+                            .format("dddd, DD-MM-YYYY")}
+                        </Typography>
+                      )}
+                    </div>
+                  </div>
+                  {/* <div>
+                    <QRCode
+                      bgColor="transparent"
+                      size={80}
+                      value={detail_order.code}
+                    />
+                    <Typography variant="h6">{detail_order.code}</Typography>
+                  </div> */}
+                </div>
+                {order.data &&
+                  order.data.detail_orders &&
+                  order.data.detail_orders.map((detail_order, i) => {
+                    return (
+                      <>
+                        <div
+                          key={"train_" + detail_order.id}
+                          style={{ backgroundColor: "white" }}
+                        >
                           <div>
-                            <Typography display="inline" variant="subtitle2">
-                              {moment(detail_order.createdAt)
-                                .local()
-                                .format("dddd, DD-MM-YYYY")}
+                            <Typography variant="h6">
+                              <b>{detail_order.ticket.train.name}</b>
                             </Typography>
+                            <Typography variant="subtitle1">
+                              {detail_order.ticket.class.name}
+                            </Typography>
+                            {/* <Typography variant="caption">Pending</Typography> */}
                           </div>
                         </div>
-                        <div>
-                          <QRCode
-                            bgColor="transparent"
-                            size={80}
-                            value={detail_order.code}
-                          />
-                          <Typography variant="h6">
-                            {detail_order.code}
-                          </Typography>
-                        </div>
-                      </div>
-                      <div style={{ backgroundColor: "white" }}>
-                        <div>
-                          <Typography variant="h6">
-                            <b>{detail_order.ticket.train.name}</b>
-                          </Typography>
-                          <Typography variant="subtitle1">
-                            {detail_order.ticket.class.name}
-                          </Typography>
-                          {/* <Typography variant="caption">Pending</Typography> */}
-                        </div>
-                      </div>
-                      <div style={{ backgroundColor: "white" }}>
-                        <div>
-                          <Stepper
-                            orientation="vertical"
-                            style={{ padding: 0 }}
-                          >
-                            <Step key="1">
-                              <StepLabel
-                                StepIconComponent={startStepIcons}
-                              ></StepLabel>
-                            </Step>
-                            <Step key="2">
-                              <StepLabel
-                                StepIconComponent={endStepIcons}
-                              ></StepLabel>
-                            </Step>
-                          </Stepper>
-                        </div>
-                        <div className={classes.stepper}>
+                        <div
+                          key={"ticket_" + detail_order.id}
+                          style={{ backgroundColor: "white" }}
+                        >
                           <div>
-                            <Typography variant="subtitle1">
-                              <b>
+                            <Stepper
+                              orientation="vertical"
+                              style={{ padding: 0 }}
+                            >
+                              <Step key="1">
+                                <StepLabel
+                                  StepIconComponent={startStepIcons}
+                                ></StepLabel>
+                              </Step>
+                              <Step key="2">
+                                <StepLabel
+                                  StepIconComponent={endStepIcons}
+                                ></StepLabel>
+                              </Step>
+                            </Stepper>
+                          </div>
+                          <div className={classes.stepper}>
+                            <div>
+                              <Typography variant="subtitle1">
+                                <b>
+                                  {moment(detail_order.ticket.startTime)
+                                    .local()
+                                    .format("HH:mm:ss")}
+                                </b>
+                              </Typography>
+                              <Typography variant="caption">
                                 {moment(detail_order.ticket.startTime)
                                   .local()
-                                  .format("HH:mm:ss")}
-                              </b>
-                            </Typography>
-                            <Typography variant="caption">
-                              {moment(detail_order.ticket.startTime)
-                                .local()
-                                .format("DD-MM-YYYY")}
-                            </Typography>
-                          </div>
-                          <div>
-                            <Typography variant="subtitle1">
-                              <b>
+                                  .format("DD-MM-YYYY")}
+                              </Typography>
+                            </div>
+                            <div>
+                              <Typography variant="subtitle1">
+                                <b>
+                                  {moment(detail_order.ticket.arrivalTime)
+                                    .local()
+                                    .format("HH:mm:ss")}
+                                </b>
+                              </Typography>
+                              <Typography variant="caption">
                                 {moment(detail_order.ticket.arrivalTime)
                                   .local()
-                                  .format("HH:mm:ss")}
-                              </b>
-                            </Typography>
-                            <Typography variant="caption">
-                              {moment(detail_order.ticket.arrivalTime)
-                                .local()
-                                .format("DD-MM-YYYY")}
-                            </Typography>
-                          </div>
-                        </div>
-                        <div>
-                          <div>
-                            <Typography variant="subtitle1">
-                              <b>{`${detail_order.ticket.startStation.city} (${detail_order.ticket.startStation.code})`}</b>
-                            </Typography>
-                            <Typography variant="caption">
-                              Stasiun {detail_order.ticket.startStation.name}
-                            </Typography>
+                                  .format("DD-MM-YYYY")}
+                              </Typography>
+                            </div>
                           </div>
                           <div>
-                            <Typography variant="subtitle1">
-                              <b>{`${detail_order.ticket.destinationStation.city} (${detail_order.ticket.destinationStation.code})`}</b>
-                            </Typography>
-                            <Typography variant="caption">
-                              Stasiun{" "}
-                              {detail_order.ticket.destinationStation.name}
-                            </Typography>
+                            <div>
+                              <Typography variant="subtitle1">
+                                <b>{`${detail_order.ticket.startStation.city} (${detail_order.ticket.startStation.code})`}</b>
+                              </Typography>
+                              <Typography variant="caption">
+                                Stasiun {detail_order.ticket.startStation.name}
+                              </Typography>
+                            </div>
+                            <div>
+                              <Typography variant="subtitle1">
+                                <b>{`${detail_order.ticket.destinationStation.city} (${detail_order.ticket.destinationStation.code})`}</b>
+                              </Typography>
+                              <Typography variant="caption">
+                                Stasiun{" "}
+                                {detail_order.ticket.destinationStation.name}
+                              </Typography>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </Paper>
-                  );
-                })}
+                        <Divider />
+                      </>
+                    );
+                  })}
+              </Paper>
             </Grid>
           </Grid>
         </Container>
@@ -397,8 +485,9 @@ class Payment extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  resetOrder: () => dispatch(resetOrder()),
-  getOrder: id => dispatch(getOrder(id))
+  // resetOrder: () => dispatch(resetOrder()),
+  getOrder: id => dispatch(getOrder(id)),
+  updateProofOrder: (image, id) => dispatch(updateProofOrder(image, id))
 });
 
 const mapStateToProps = state => ({
