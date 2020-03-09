@@ -22,6 +22,10 @@ import DetailOrder from "../../components/admin/detailOrder";
 import EditOrder from "../../components/admin/editOrder";
 import DeleteOrder from "../../components/admin/deleteOrder";
 
+import { connect } from "react-redux";
+import { getOrders } from "../../_actions/orders";
+import { updateOrder } from "../../_actions/order";
+
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
@@ -41,8 +45,17 @@ const styles = theme => ({
 });
 
 class Admin extends React.Component {
+  componentDidMount() {
+    this.props.getOrders();
+  }
+
+  refreshOrder = val => {
+    this.props.getOrders();
+  };
+
   render() {
-    const { classes } = this.props;
+    const { classes, orders } = this.props;
+    console.log("xxxx", orders);
 
     return (
       <>
@@ -65,15 +78,24 @@ class Admin extends React.Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row, i) => (
-                    <TableRow key={row.name}>
-                      <TableCell>{i + 1}</TableCell>
-                      <TableCell>{row.calories}</TableCell>
-                      <TableCell>{row.fat}</TableCell>
-                      <TableCell>{row.carbs}</TableCell>
-                      <TableCell>{row.carbs}</TableCell>
-                      <TableCell align="center">
-                        {/* <IconButton
+                  {orders.data &&
+                    orders.data.map((row, i) => (
+                      <TableRow key={row.name}>
+                        <TableCell>{i + 1}</TableCell>
+                        <TableCell>{row.user.name}</TableCell>
+                        <TableCell>
+                          {row.detail_orders.map((item, i) => {
+                            return (
+                              <div>
+                                {`${item.ticket.startStation.city} - ${item.ticket.destinationStation.city}`}
+                              </div>
+                            );
+                          })}
+                        </TableCell>
+                        <TableCell>{row.proof_transfer}</TableCell>
+                        <TableCell>{row.status}</TableCell>
+                        <TableCell align="center">
+                          {/* <IconButton
                           onClick={e => alert("sd")}
                           color="primary"
                           aria-label="detail"
@@ -82,7 +104,7 @@ class Admin extends React.Component {
                           <SearchRoundedIcon />
                         </IconButton> */}
 
-                        {/* <IconButton
+                          {/* <IconButton
                           onClick={e => alert("sd")}
                           style={{ color: "green" }}
                           aria-label="edit"
@@ -91,7 +113,7 @@ class Admin extends React.Component {
                           <BorderColorRoundedIcon />
                         </IconButton> */}
 
-                        {/* <IconButton
+                          {/* <IconButton
                           onClick={e => alert("sd")}
                           style={{ color: "red" }}
                           aria-label="delete"
@@ -99,12 +121,18 @@ class Admin extends React.Component {
                         >
                           <DeleteOutlineRoundedIcon />
                         </IconButton> */}
-                        <DetailOrder />
-                        <EditOrder />
-                        <DeleteOrder />
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                          <DetailOrder order={row} />
+                          <EditOrder
+                            onRefresh={this.refreshOrder}
+                            order={row}
+                          />
+                          <DeleteOrder
+                            onRefresh={this.refreshOrder}
+                            order={row}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -115,4 +143,16 @@ class Admin extends React.Component {
   }
 }
 
-export default withStyles(styles)(Admin);
+const mapStateToProps = state => ({
+  orders: state.orders
+});
+
+const mapDispatchToProps = dispatch => ({
+  updateOrder: (data, id) => dispatch(updateOrder(data, id)),
+  getOrders: () => dispatch(getOrders())
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Admin));

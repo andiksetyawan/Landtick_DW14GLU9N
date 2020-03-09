@@ -44,10 +44,10 @@ class Routers extends React.Component {
         <Route path="/" exact component={Home} />
         <Route path="/myticket" component={MyTicket} />
         {/* <Route path="/payment" component={Payment} />  */}
-        {/* <Route path="/admin" component={Admin} />
+        <Route path="/admin" component={Admin} />
         <Route path="/addticket" component={AddTicket} />
         <Route path="/booking" component={Booking} />
-        <Route path="/payment/:id" component={Payment} />  */}
+        <Route path="/payment/:id" component={Payment} /> 
         <Route path="/print/:id" component={Print} />
         <Redirect to="/" />
       </Switch>
@@ -62,7 +62,7 @@ class Routers extends React.Component {
           <Route path="/booking" component={Booking} />
           <Route path="/payment/:id" component={Payment} />
           <Route path="/myticket" component={MyTicket} />
-          <Route path="/payment" component={Payment} />
+          {/* <Route path="/payment" component={Payment} /> */}
           <Route path="/" component={Home} />
 
           <Redirect to="/" />

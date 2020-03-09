@@ -2,7 +2,8 @@ import {
   ADD_ORDER,
   GET_ORDER,
   UPDATE_ORDER,
-  RESET_ORDER
+  RESET_ORDER,
+  DELETE_ORDER
 } from "../config/constants";
 
 const initState = {
@@ -16,6 +17,7 @@ const order = (state = initState, action) => {
     case `${ADD_ORDER}_PENDING`:
     case `${GET_ORDER}_PENDING`:
     case `${UPDATE_ORDER}_PENDING`:
+    case `${DELETE_ORDER}_PENDING`:
       return {
         ...state,
         loading: true,
@@ -24,6 +26,7 @@ const order = (state = initState, action) => {
     case `${ADD_ORDER}_FULFILLED`:
     case `${GET_ORDER}_FULFILLED`:
     case `${UPDATE_ORDER}_FULFILLED`:
+    case `${DELETE_ORDER}_FULFILLED`:
       return {
         ...state,
         data: action.payload,
@@ -33,6 +36,7 @@ const order = (state = initState, action) => {
     case `${ADD_ORDER}_REJECTED`:
     case `${GET_ORDER}_REJECTED`:
     case `${UPDATE_ORDER}_REJECTED`:
+    case `${DELETE_ORDER}_REJECTED`:
       return {
         ...state,
         loading: false,

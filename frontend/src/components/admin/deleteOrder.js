@@ -14,6 +14,9 @@ import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 
+import { connect } from "react-redux";
+import { deleteOrder } from "../../_actions/order";
+
 const styles = theme => ({
   closeButton: {
     position: "absolute",
@@ -28,7 +31,14 @@ class DeleteOrder extends React.Component {
     super(props);
     this.state = { isopen: false };
   }
-  handleUpdate = async () => {};
+
+  handleDelete = async () => {
+    const res = await this.props.deleteOrder(this.props.order.id);
+    if (res.action.type === "DELETE_ORDER_FULFILLED") {
+      this.setState({ isopen: false });
+      this.props.onRefresh();
+    }
+  };
 
   handleClose = () => {
     this.setState({ isopen: false });
@@ -70,9 +80,18 @@ class DeleteOrder extends React.Component {
               Data yang terhapus tidak bisa dikembalikan.
             </DialogContentText>
           </DialogContent> */}
-          <DialogActions style={{padding:"8px 20px"}}>
-            <Button color="primary">Batal</Button>
-            <Button style={{ color: "red" }} autoFocus>
+          <DialogActions style={{ padding: "8px 20px" }}>
+            <Button
+              color="primary"
+              onClick={() => this.setState({ isopen: false })}
+            >
+              Batal
+            </Button>
+            <Button
+              onClick={this.handleDelete}
+              style={{ color: "red" }}
+              autoFocus
+            >
               Hapus
             </Button>
           </DialogActions>
@@ -82,4 +101,11 @@ class DeleteOrder extends React.Component {
   }
 }
 
-export default withStyles(styles)(DeleteOrder);
+const mapDispatchToProps = dispatch => ({
+  deleteOrder: id => dispatch(deleteOrder(id))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(withStyles(styles)(DeleteOrder));

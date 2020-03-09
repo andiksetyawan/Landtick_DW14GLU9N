@@ -186,16 +186,16 @@ class Home extends Component {
       };
 
       const query = queryString.stringify(data);
-      console.log("query pulang", query);
+    //  console.log("query pulang", query);
       const res = await this.props.getSearch(query);
-      console.log(res);
+      //console.log(res);
       if (res.action.type === "GET_SEARCH_FULFILLED") {
-        console.log("FULLFILED");
+        //console.log("FULLFILED");
         this.setState({ step: 1 });
       }
     } else {
       this.props.history.push("/booking");
-      console.log("TIDAK PP PPP PP PP", this.state.pp);
+      //console.log("TIDAK PP PPP PP PP", this.state.pp);
     }
   };
 

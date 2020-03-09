@@ -12,14 +12,10 @@ const Station = models.station;
 const Upload = require("../utils/upload");
 
 exports.create = async (req, res) => {
-  //const  user = req.body;
-  console.log("body", req.body);
-  // const { pet } = req.body;
   models.sequelize
     .transaction(async t => {
       try {
         //check qty ticket
-
         const ticket = await Ticket.findOne({
           where: { id: req.body.departure }
         });
@@ -28,16 +24,27 @@ exports.create = async (req, res) => {
           if (stok_ticket < req.body.qty) {
             throw new Error("stock");
           } else {
+            let _total = 0;
+            if (req.body.return) {
+              const check_price_ticket_return = await Ticket.findOne({
+                where: { id: req.body.return }
+              });
+              _total =
+                ticket.price * req.body.qty +
+                check_price_ticket_return.price * req.body.qty;
+            } else {
+              _total = ticket.price * req.body.qty;
+            }
             const data_order = {
-              invoice: "1234INV1111111111111111",
-              user_id: 1, /////GANTI
-              total: 600000
+              invoice: "1234INV111111111111111111",
+              user_id: req.user, /////GANTI
+              total: _total
             };
             const order = await Order.create(data_order, { transaction: t });
 
             const data_detail_order = [
               {
-                code: "BOO1234",
+                code: "BOO1260",
                 order_id: order.id,
                 ticket_id: req.body.departure, //departure ticket id
                 qty: req.body.qty
@@ -46,7 +53,7 @@ exports.create = async (req, res) => {
 
             if (req.body.return) {
               data_detail_order.push({
-                code: "BOO12351111",
+                code: "BOO1261",
                 order_id: order.id,
                 ticket_id: req.body.return, //departure ticket id
                 qty: req.body.qty
@@ -82,7 +89,7 @@ exports.create = async (req, res) => {
 
             if (req.body.return) {
               const ticket_return = await Ticket.findOne({
-                where: { id: req.body.departure }
+                where: { id: req.body.return }
               });
               if (ticket_return && ticket_return.qty >= req.body.qty) {
                 //UPDATE STOCK return Ticket
@@ -211,6 +218,55 @@ exports.show = async (req, res) => {
     res.status(404).json({
       success: false,
       message: "Load Ticket data failed, something went wrong",
+      data: {}
+    });
+  }
+};
+
+exports.update = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const order = await Order.update(req.body, {
+      where: { id }
+    });
+    if (order && order.length > 0) {
+      res.json({
+        success: true,
+        message: "Ticket was successfully loaded",
+        data: order
+      });
+    }
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: "Load Ticket data failed, something went wrong",
+      data: {}
+    });
+  }
+};
+
+exports.destroy = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await Order.destroy({ where: { id } });
+    if (order) {
+      res.json({
+        success: true,
+        message: "order was successfully deleted",
+        data: { id }
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "delete order fail",
+        data: {}
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({
+      success: false,
+      message: "Deleting order data failed, something went wrong",
       data: {}
     });
   }

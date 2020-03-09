@@ -24,10 +24,14 @@ import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import LensIcon from "@material-ui/icons/Lens";
 
 import QRCode from "qrcode.react";
+import moment from "moment";
+
+import { toRupiah } from "indo-formatter";
 
 import { connect } from "react-redux";
+import { getOrder } from "../../_actions/order";
 
-const startStepIcons = () => <RadioButtonUncheckedIcon  color="primary" />;
+const startStepIcons = () => <RadioButtonUncheckedIcon color="primary" />;
 
 const endStepIcons = () => <LensIcon color="primary" />;
 
@@ -64,7 +68,11 @@ const styles = theme => ({
   main: {
     "& > div": {
       padding: "10px 0",
-      display: "flex"
+      display: "flex",
+      "& > div": {
+        padding: "0 10px"
+        // display: "flex",
+      }
     }
   },
   stepper: {
@@ -77,21 +85,34 @@ const styles = theme => ({
 class DetailOrder extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isopen: false, email: "", password: "" };
+    this.state = { isopen: false };
   }
 
-  handleChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
   handleClose = () => {
     this.setState({ isopen: false });
   };
+
+  componentDidMount() {
+    // alert(this.props.id);
+   // this.props.onRefresh("ssas");
+
+  }
+
+  handleOpen = id => {
+    this.setState({ isopen: true });
+    // this.props.getOrder(id);
+    // alert(id);
+  };
+
   render() {
-    const { classes } = this.props;
+    const { classes, order } = this.props;
+    // const { loading, data } = order;
+    console.log("order", order);
+    // if (loading) return <div>loading..</div>;
     return (
       <>
         <IconButton
-          onClick={() => this.setState({ isopen: true })}
+          onClick={e => this.handleOpen(this.props.id)}
           color="primary"
           aria-label="detail"
           component="span"
@@ -117,11 +138,16 @@ class DetailOrder extends React.Component {
 
             <div className={classes.logo}>landtick</div>
           </DialogTitle>
-          <DialogContent style={{ textAlign: "left", marginBottom:20 }}>
-            <Typography variant="h4">
-              <b>INVOICE</b>
-            </Typography>
-            <Typography variant="caption">Kode Invoice : INV0101</Typography>
+          <DialogContent style={{ textAlign: "left", marginBottom: 20 }}>
+            <div style={{ padding: 10 }}>
+              <Typography variant="h4">
+                <b>INVOICE</b>
+              </Typography>
+              <Typography variant="caption">
+                Kode Invoice : {order.invoice}
+              </Typography>
+            </div>
+
             <Grid container spacing={3}>
               <Grid item xs={8} className={classes.main}>
                 <div>
@@ -131,107 +157,171 @@ class DetailOrder extends React.Component {
                     </Typography>
                     <div>
                       <Typography display="inline" variant="subtitle2">
-                        <b>Sabtu </b>
+                        {moment(order.createdAt)
+                          .local()
+                          .format("dddd, DD MMMM YYYY")}
                       </Typography>
-                      <Typography display="inline" variant="caption">
+                      {/* <Typography display="inline" variant="caption">
                         21 Februari 2020
-                      </Typography>
-                    </div>
-                  </div>
-                  <div>
-                    <QRCode bgColor="transparent" size="40" value="INV0101" />
-                    <Typography variant="h6">INV0101</Typography>
-                  </div>
-                </div>
-                <div style={{ backgroundColor: "white" }}>
-                  <div>
-                    <Typography variant="h6">
-                      <b>Argo Wilis </b>
-                    </Typography>
-                    <Typography variant="subtitle1">Executive (H)</Typography>
-                    {/* <Typography variant="caption">Pending</Typography> */}
-                  </div>
-                </div>
-                <div style={{ backgroundColor: "white" }}>
-                  <div>
-                    <Stepper orientation="vertical" style={{ padding: 0 }}>
-                      <Step key="1">
-                        <StepLabel
-                          StepIconComponent={startStepIcons}
-                        ></StepLabel>
-                      </Step>
-                      <Step key="2">
-                        <StepLabel StepIconComponent={endStepIcons}></StepLabel>
-                      </Step>
-                    </Stepper>
-                  </div>
-                  <div className={classes.stepper}>
-                    <div>
-                      <Typography variant="subtitle1">
-                        <b>05.00</b>
-                      </Typography>
-                      <Typography variant="caption">
-                        21 Februari 2020
-                      </Typography>
-                    </div>
-                    <div>
-                      <Typography variant="subtitle1">
-                        <b>21.00 </b>
-                      </Typography>
-                      <Typography variant="caption">
-                        21 Februari 2020
-                      </Typography>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <Typography variant="subtitle1">
-                        <b>Jakarta (GMR)</b>
-                      </Typography>
-                      <Typography variant="caption">Stasiun Gambir</Typography>
-                    </div>
-                    <div>
-                      <Typography variant="subtitle1">
-                        <b>Surabaya (SBY) </b>
-                      </Typography>
-                      <Typography variant="caption">
-                        Stasiun Surabaya
-                      </Typography>
+                      </Typography> */}
                     </div>
                   </div>
                 </div>
               </Grid>
               <Grid item xs={4}>
-                <div className={classes.proofTransfer}>
-                  <img src="https://skripsilive.com/wp-content/uploads/et_temp/IMG-20180502-WA0009-576x1024-47225_576x675.jpg" />
-                  <div>Upload Payment Proof</div>
-                </div>
+                {order.proof_transfer && (
+                  <div className={classes.proofTransfer}>
+                    <img
+                      src={`http://localhost:5000/assets/img/${order.proof_transfer}`}
+                    />
+                    <div>Payment Proof</div>
+                  </div>
+                )}
               </Grid>
             </Grid>
+
+            <section className={classes.main}>
+              {order.detail_orders.map((detail_order, i) => {
+                return (
+                  <>
+                    <div style={{ backgroundColor: "white" }}>
+                      <div>
+                        <Typography variant="h6">
+                          <b>{detail_order.ticket.train.name}</b>
+                        </Typography>
+                        <Typography variant="subtitle1">
+                          {detail_order.ticket.class.name}
+                        </Typography>
+                      </div>
+                    </div>
+                    <div style={{ backgroundColor: "white" }}>
+                      <div>
+                        <Stepper orientation="vertical" style={{ padding: 0 }}>
+                          <Step key="1">
+                            <StepLabel
+                              StepIconComponent={startStepIcons}
+                            ></StepLabel>
+                          </Step>
+                          <Step key="2">
+                            <StepLabel
+                              StepIconComponent={endStepIcons}
+                            ></StepLabel>
+                          </Step>
+                        </Stepper>
+                      </div>
+                      <div className={classes.stepper}>
+                        <div>
+                          <Typography variant="subtitle1">
+                            <b>
+                              {moment(detail_order.ticket.startTime)
+                                .local()
+                                .format("HH:mm")}
+                            </b>
+                          </Typography>
+                          <Typography variant="caption">
+                            {moment(detail_order.ticket.startTime)
+                              .local()
+                              .format("DD MMMM YYYY")}
+                          </Typography>
+                        </div>
+                        <div>
+                          <Typography variant="subtitle1">
+                            <b>
+                              {moment(detail_order.ticket.arrivalTime)
+                                .local()
+                                .format("HH:mm")}
+                            </b>
+                          </Typography>
+                          <Typography variant="caption">
+                            {moment(detail_order.ticket.arrivalTime)
+                              .local()
+                              .format("DD MMMM YYYY")}
+                          </Typography>
+                        </div>
+                      </div>
+                      <div>
+                        <div>
+                          <Typography variant="subtitle1">
+                            <b>
+                              {`${detail_order.ticket.startStation.city} (${detail_order.ticket.startStation.code})`}
+                            </b>
+                          </Typography>
+                          <Typography variant="caption">
+                            Stasiun {detail_order.ticket.startStation.name}
+                          </Typography>
+                        </div>
+                        <div>
+                          <Typography variant="subtitle1">
+                            <b>
+                              {`${detail_order.ticket.destinationStation.city} (${detail_order.ticket.destinationStation.code})`}
+                            </b>
+                          </Typography>
+                          <Typography variant="caption">
+                            Stasiun{" "}
+                            {detail_order.ticket.destinationStation.name}
+                          </Typography>
+                        </div>
+                      </div>
+                      <div>
+                        <QRCode
+                          bgColor="transparent"
+                          size={65}
+                          value={detail_order.code}
+                        />
+                        <Typography variant="h6">
+                          {detail_order.code}
+                        </Typography>
+                      </div>
+                    </div>
+                  </>
+                );
+              })}
+            </section>
+
             <Table size="small" aria-label="simple table">
               <TableHead>
                 <TableRow>
                   <TableCell>
-                    <b>No. ID</b>
+                    <b>No. Tanda Pengenal</b>
                   </TableCell>
                   <TableCell>
-                    <b>Nama</b>
+                    <b>Nama Penumpang</b>
                   </TableCell>
-                  <TableCell>
-                    <b>No. Hp</b>
-                  </TableCell>
+                  {/* <TableCell>No. Handphone</TableCell> */}
                   <TableCell>
                     <b>Email</b>
                   </TableCell>
+                  {/* <TableCell></TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <TableCell>0817318391839191</TableCell>
-                  <TableCell>Andik</TableCell>
-                  <TableCell>029812127172</TableCell>
-                  <TableCell>andik@gmail.com</TableCell>
-                </TableRow>
+                {order.passengers.map((passenger, i) => {
+                  return (
+                    <TableRow>
+                      <TableCell>{passenger.id_number}</TableCell>
+                      <TableCell>
+                        {passenger.name}
+                        {passenger.type == "infant" && (
+                          <Typography
+                            variant="caption"
+                            display="inline"
+                            className={classes.infant}
+                          >
+                            {"bayi"}
+                          </Typography>
+                        )}
+                      </TableCell>
+
+                      <TableCell>
+                        {passenger.email}
+                        {/* andik.setyawan19@gmail.com */}
+                      </TableCell>
+                      {/* <TableCell>
+                                    
+                                  </TableCell> */}
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
             <div
@@ -246,7 +336,7 @@ class DetailOrder extends React.Component {
             >
               <div style={{ flexGrow: 1 }}>Total</div>
               <div>
-                <b>Rp.250.000</b>
+                <b>{toRupiah(order.total)}</b>
               </div>
             </div>
           </DialogContent>
@@ -256,4 +346,4 @@ class DetailOrder extends React.Component {
   }
 }
 
-export default connect()(withStyles(styles)(DetailOrder));
+export default withStyles(styles)(DetailOrder);

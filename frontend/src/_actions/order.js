@@ -3,7 +3,8 @@ import {
   ADD_ORDER,
   GET_ORDER,
   RESET_ORDER,
-  UPDATE_ORDER
+  UPDATE_ORDER,
+  DELETE_ORDER
 } from "../config/constants";
 
 export const addOrder = data => {
@@ -30,6 +31,34 @@ export const getOrder = id => {
       setAuthToken(token);
       const res = await API.get("/order/" + id);
       console.log("ressss get order", res.data.data);
+      return res.data.data;
+    }
+  };
+};
+
+export const updateOrder = (data, id) => {
+  console.log("masuk updateOrder actions");
+  const token = localStorage.getItem("token");
+  return {
+    type: UPDATE_ORDER,
+    payload: async () => {
+      setAuthToken(token);
+      const res = await API.patch("/order/" + id, data);
+      console.log("ressss updateOrder", res.data.data);
+      return res.data.data;
+    }
+  };
+};
+
+export const deleteOrder = id => {
+  console.log("masuk deleteOrder actions");
+  const token = localStorage.getItem("token");
+  return {
+    type: DELETE_ORDER,
+    payload: async () => {
+      setAuthToken(token);
+      const res = await API.delete("/order/" + id);
+      console.log("ressss delete", res.data.data);
       return res.data.data;
     }
   };

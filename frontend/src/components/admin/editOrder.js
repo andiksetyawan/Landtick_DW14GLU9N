@@ -18,6 +18,9 @@ import Alert from "@material-ui/lab/Alert";
 import CloseIcon from "@material-ui/icons/Close";
 import BorderColorRoundedIcon from "@material-ui/icons/BorderColorRounded";
 
+import { connect } from "react-redux";
+import { updateOrder } from "../../_actions/order";
+
 const styles = theme => ({
   // root: {
   //   textAlign: "center"
@@ -36,16 +39,26 @@ const styles = theme => ({
 class EditTransaction extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isopen: false };
+    this.state = { isopen: false, status: this.props.order.status };
   }
-  handleUpdate = async () => {};
+
+  handleUpdate = async () => {
+    const data = { status: this.state.status };
+    const res = await this.props.updateOrder(data, this.props.order.id);
+    if (res.action.type === "UPDATE_ORDER_FULFILLED") {
+      this.setState({ isopen: false });
+      this.props.onRefresh();
+    }
+  };
 
   handleClose = () => {
     this.setState({ isopen: false });
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, order } = this.props;
+
+    console.log("order edit", order);
 
     return (
       <>
@@ -126,19 +139,24 @@ class EditTransaction extends React.Component {
               />
 
               <div style={{ margin: "8px 0" }}>
-                <FormControl variant="filled" size="small" style={{ width: "100%" }}>
+                <FormControl
+                  variant="filled"
+                  size="small"
+                  style={{ width: "100%" }}
+                >
                   <InputLabel id="demo-simple-select-filled-label-gender">
                     Status
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-filled-label-gender"
                     id="demo-simple-select-filled-gender"
-                    value={"approved"}
-                    // onChange={e => this.setState({ gender: e.target.value })}
+                    value={this.state.status}
+                    onChange={e => this.setState({ status: e.target.value })}
                   >
                     <MenuItem value={"approved"}>Approved</MenuItem>
                     <MenuItem value={"pending"}>Pending</MenuItem>
                     <MenuItem value={"cancel"}>Cancel</MenuItem>
+                    <MenuItem value={"checking"}>Checking</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -162,4 +180,11 @@ class EditTransaction extends React.Component {
   }
 }
 
-export default withStyles(styles)(EditTransaction);
+const mapDispatchToProps = dispatch => ({
+  updateOrder: (data, id) => dispatch(updateOrder(data, id))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(withStyles(styles)(EditTransaction));

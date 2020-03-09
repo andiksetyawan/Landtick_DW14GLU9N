@@ -40,5 +40,9 @@ router.post("/order/proof/:id", auth, order.updateProofTransfer); //myticket
 
 router.get("/detail_order/:id", detailOrder.show); //myticket
 
+router.patch("/order/:id", auth, order.update);
+router.delete("/order/:id", auth, order.destroy);
+
+
 
 module.exports = router;
