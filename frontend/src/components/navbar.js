@@ -1,6 +1,13 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-import { withStyles, AppBar, Container, Toolbar, Typography } from "@material-ui/core";
+import {
+  withStyles,
+  AppBar,
+  Container,
+  Toolbar,
+  Typography
+} from "@material-ui/core";
 
 import Login from "../components/login";
 import Register from "../components/register";
@@ -14,11 +21,12 @@ const styles = theme => ({
     color: theme.palette.primary.main
   },
   logo: {
-    flexGrow: 1,
+    
     fontFamily: "Mandali",
     color: theme.palette.primary.main,
     fontSize: 35,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    textDecoration: "none"
   }
 });
 
@@ -31,11 +39,14 @@ class NavBar extends React.Component {
       <AppBar position="fixed" color="default" className={classes.appbar}>
         <Container>
           <Toolbar style={{ padding: 0 }}>
-            <div className={classes.logo} style={{}}>
-              land
-              {/* <Typography component="span" variant="inherit" color="textSecondary">tick</Typography> */}
-              <span style={{ color: "#143350" }}>tick</span>
+            <div style={{flexGrow: 1}}>
+              <Link to="/" style={{textDecoration:"none"}} className={classes.logo}>
+                land
+                {/* <Typography component="span" variant="inherit" color="textSecondary">tick</Typography> */}
+                <span style={{ color: "#143350" }}>tick</span>{" "}
+              </Link>
             </div>
+
             {authenticated ? (
               <>
                 <UserDropdown />

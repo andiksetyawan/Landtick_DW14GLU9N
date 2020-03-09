@@ -13,6 +13,7 @@ const station = require("../controllers/station");
 const train = require("../controllers/train");
 const class_ticket = require("../controllers/class");
 const order = require("../controllers/order");
+const detailOrder = require("../controllers/detail_order");
 
 router.get("/", (req, res) => res.send("homee"));
 router.post("/login", login);
@@ -36,5 +37,8 @@ router.post("/order", auth, order.create);
 router.get("/orders", auth, order.showsByUser); //myticket
 router.get("/order/:id", auth, order.show); //myticket
 router.post("/order/proof/:id", auth, order.updateProofTransfer); //myticket
+
+router.get("/detail_order/:id", detailOrder.show); //myticket
+
 
 module.exports = router;

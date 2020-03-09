@@ -13,6 +13,7 @@ import Home from "./pages/home";
 import MyTicket from "./pages/myticket";
 import Payment from "./pages/payment";
 import Booking from "./pages/booking";
+import Print from "./pages/print"; //print ticket
 
 import Admin from "./pages/admin/index";
 import AddTicket from "./pages/admin/addTicket";
@@ -43,10 +44,11 @@ class Routers extends React.Component {
         <Route path="/" exact component={Home} />
         <Route path="/myticket" component={MyTicket} />
         {/* <Route path="/payment" component={Payment} />  */}
-        <Route path="/admin" component={Admin} />
+        {/* <Route path="/admin" component={Admin} />
         <Route path="/addticket" component={AddTicket} />
         <Route path="/booking" component={Booking} />
-        <Route path="/payment/:id" component={Payment} /> 
+        <Route path="/payment/:id" component={Payment} />  */}
+        <Route path="/print/:id" component={Print} />
         <Redirect to="/" />
       </Switch>
     );
@@ -55,9 +57,14 @@ class Routers extends React.Component {
       routes = (
         <Switch>
           {/* <Route path="/profile" component={Profile} /> */}
-          <Route path="/" component={Home} />
+          <Route path="/admin" component={Admin} />
+          <Route path="/addticket" component={AddTicket} />
+          <Route path="/booking" component={Booking} />
+          <Route path="/payment/:id" component={Payment} />
           <Route path="/myticket" component={MyTicket} />
           <Route path="/payment" component={Payment} />
+          <Route path="/" component={Home} />
+
           <Redirect to="/" />
         </Switch>
       );

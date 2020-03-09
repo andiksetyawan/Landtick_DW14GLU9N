@@ -35,3 +35,7 @@ export const RESET_ORDER = "RESET_ORDER";
 
 export const GET_ORDERS = "GET_ORDERS";
 export const RESET_ORDERS = "RESET_ORDERS";
+
+export const GET_DETAIL_ORDER = "GET_DETAIL_ORDER";
+
+

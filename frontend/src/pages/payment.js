@@ -111,7 +111,7 @@ class Payment extends Component {
   }
   async componentDidMount() {
     const { id } = this.props.match.params;
-    console.log("didid", id);
+   // console.log("didid", id);
     //this.props.resetOrder();
     const res = await this.props.getOrder(id);
     if (res.action.type == "GET_ORDER_FULFILLED") {
@@ -127,11 +127,16 @@ class Payment extends Component {
 
   handleSavePayment = async e => {
     const { id } = this.props.match.params;
-    const res = await this.props.updateProofOrder(this.state.image, id);
-    if (res.action.type == "UPDATE_ORDER_FULFILLED") {
-      //show alert klik myticket
-      // this.props.history.push("/myticket")
+    if(this.state.image){
+      const res = await this.props.updateProofOrder(this.state.image, id);
+      if (res.action.type == "UPDATE_ORDER_FULFILLED") {
+        //show alert klik myticket
+        // this.props.history.push("/myticket")
+      }
+    }else{
+      alert("Upload bukti transfer lebih dahulu.")
     }
+    
   };
 
   render() {
@@ -341,6 +346,7 @@ class Payment extends Component {
                         />
                         <label htmlFor="upload-file">
                           <Button
+                            style={{marginTop:10}}
                             fullWidth
                             variant="outlined"
                             color="primary"

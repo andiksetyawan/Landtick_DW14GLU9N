@@ -29,7 +29,8 @@ import {
   TableRow,
   Grid,
   Button,
-  Divider
+  Divider,
+  Link
 } from "@material-ui/core";
 
 import NavBar from "../components/navbar";
@@ -267,13 +268,19 @@ class MyTicket extends Component {
                               {detail_order.code}
                             </Typography> */}
                               <div>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<PrintRoundedIcon />}
+                                <a
+                                  target="_BLANK"
+                                  href={`/print/${detail_order.id}`}
                                 >
-                                  Cetak
-                                </Button>
+                                  <Button
+                                    size="small"
+                                    variant="outlined"
+                                    startIcon={<PrintRoundedIcon />}
+                                    onClick={() => {}}
+                                  >
+                                    Cetak
+                                  </Button>
+                                </a>
                               </div>
                             </div>
                           )}
