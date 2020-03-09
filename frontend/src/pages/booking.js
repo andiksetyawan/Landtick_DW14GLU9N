@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { toRupiah } from "indo-formatter";
 
 import {
@@ -67,7 +67,7 @@ class Booking extends React.Component {
     return pass;
   };
 
-  handleOrder = () => {
+  handleOrder = async () => {
     const passengers = this.generetePassengers();
     console.log("passenger array object", passengers);
 
@@ -81,8 +81,11 @@ class Booking extends React.Component {
     };
 
     console.log("post data create order", data);
-    const res = this.props.addOrder(data);
+    const res = await this.props.addOrder(data);
     console.log("res order component", res);
+    if (res.action.type === "ADD_ORDER_FULFILLED") {
+      this.props.history.push("/payment/" + res.action.payload.order.id);
+    }
   };
 
   componentDidMount() {
@@ -488,4 +491,4 @@ const styles = theme => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withStyles(styles)(Booking));
+)(withRouter(withStyles(styles)(Booking)));

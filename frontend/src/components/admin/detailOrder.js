@@ -265,10 +265,10 @@ class DetailOrder extends React.Component {
                       <div>
                         <QRCode
                           bgColor="transparent"
-                          size={65}
+                          size={80}
                           value={detail_order.code}
                         />
-                        <Typography variant="h6">
+                        <Typography variant="subtitle2">
                           {detail_order.code}
                         </Typography>
                       </div>

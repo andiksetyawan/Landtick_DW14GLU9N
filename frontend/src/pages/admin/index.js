@@ -26,6 +26,8 @@ import { connect } from "react-redux";
 import { getOrders } from "../../_actions/orders";
 import { updateOrder } from "../../_actions/order";
 
+import { Redirect } from "react-router-dom";
+
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
 }
@@ -54,9 +56,10 @@ class Admin extends React.Component {
   };
 
   render() {
-    const { classes, orders } = this.props;
+    const { classes, orders, user } = this.props;
     console.log("xxxx", orders);
-
+    if (user.data && user.data.level == "user")
+      return <Redirect to="/"></Redirect>;
     return (
       <>
         <NavBar />
@@ -144,7 +147,8 @@ class Admin extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  orders: state.orders
+  orders: state.orders,
+  user: state.user
 });
 
 const mapDispatchToProps = dispatch => ({

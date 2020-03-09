@@ -99,21 +99,10 @@ class EditTransaction extends React.Component {
                 name="name"
                 fullWidth
                 disabled
-                value="1"
+                value={order.invoice}
               />
 
-              <TextField
-                id="name"
-                type="text"
-                margin="dense"
-                label="Nama"
-                variant="filled"
-                name="name"
-                fullWidth
-                disabled
-                value="Andik Setyawan"
-              />
-
+              {/* 
               <TextField
                 id="name"
                 type="text"
@@ -124,7 +113,7 @@ class EditTransaction extends React.Component {
                 fullWidth
                 disabled
                 value="Surabaya - Jakarta"
-              />
+              /> */}
 
               <TextField
                 id="name"
@@ -135,7 +124,7 @@ class EditTransaction extends React.Component {
                 name="name"
                 fullWidth
                 disabled
-                value="bca.jpg"
+                value={order.proof_transfer}
               />
 
               <div style={{ margin: "8px 0" }}>

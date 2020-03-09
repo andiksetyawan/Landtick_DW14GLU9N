@@ -25,6 +25,8 @@ import { getClasses } from "../../_actions/class";
 
 import NavBar from "../../components/navbar";
 
+import { Redirect } from "react-router-dom";
+
 const styles = theme => ({
   root: {
     marginTop: 100
@@ -89,7 +91,10 @@ class AddTicket extends React.Component {
   };
 
   render() {
-    const { classes, stations, trains, class_train } = this.props;
+    const { classes, user, stations, trains, class_train } = this.props;
+
+    if (user.data && user.data.level == "user")
+      return <Redirect to="/"></Redirect>;
 
     return (
       <>
@@ -286,6 +291,7 @@ class AddTicket extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  user: state.user,
   trains: state.train,
   stations: state.station,
   class_train: state.class_ticket

@@ -145,13 +145,16 @@ exports.search = async (req, res) => {
     // qty
   } = req.query;
 
-  console.log("query", req.query.startTime);
+  console.log("query======", req.query.startTime);
 
   const start_time_jakarta_to_utc = moment(startTime)
     .tz("Asia/Jakarta")
-    .startOf("day")
+    //.startOf("day")
     .utc()
     .toDate();
+
+  console.log("======", start_time_jakarta_to_utc);
+
 
   let end_day_jakarta_to_utc;
   if (req.query.end_time) {

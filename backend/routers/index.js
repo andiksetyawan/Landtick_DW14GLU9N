@@ -5,7 +5,7 @@ const router = express.Router();
 
 const { auth } = require("../middlewares/auth");
 
-const { login, register } = require("../controllers/auth");
+const { login, register, autoAuth } = require("../controllers/auth");
 
 const user = require("../controllers/user");
 const ticket = require("../controllers/ticket");
@@ -18,6 +18,7 @@ const detailOrder = require("../controllers/detail_order");
 router.get("/", (req, res) => res.send("homee"));
 router.post("/login", login);
 router.post("/register", register);
+router.get("/autoauth",auth, autoAuth);
 
 router.get("/user", auth, user.show);
 
@@ -34,7 +35,8 @@ router.get("/trains", train.shows);
 router.get("/classes", class_ticket.shows);
 
 router.post("/order", auth, order.create);
-router.get("/orders", auth, order.showsByUser); //myticket
+router.get("/orders/user", auth, order.showsByUser); //myticket
+router.get("/orders", auth, order.shows); //myticket
 router.get("/order/:id", auth, order.show); //myticket
 router.post("/order/proof/:id", auth, order.updateProofTransfer); //myticket
 
@@ -42,7 +44,5 @@ router.get("/detail_order/:id", detailOrder.show); //myticket
 
 router.patch("/order/:id", auth, order.update);
 router.delete("/order/:id", auth, order.destroy);
-
-
 
 module.exports = router;

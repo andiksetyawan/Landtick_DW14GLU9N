@@ -58,7 +58,7 @@ export const getAuth = () => {
     };
   } else {
     ////redirect to login page
-    console.log("LOGOUT XXXX");
+    // console.log("LOGOUT XXXX");
     return {
       type: "LOGOUT",
       payload: {}

@@ -152,6 +152,9 @@ class Home extends Component {
       // passenger
     };
 
+    console.log("dataa", data);
+
+
     const query = queryString.stringify(data);
     console.log("query", query);
     this.props.getSearch(query);

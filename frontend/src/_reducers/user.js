@@ -1,7 +1,7 @@
 import { GET_USER } from "../config/constants";
 
 const initState = {
-  data: [],
+  data: null,
   loading: false,
   error: null
 };

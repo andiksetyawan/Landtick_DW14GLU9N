@@ -35,6 +35,10 @@ class UserDropdown extends React.Component {
     };
   }
 
+  componentDidMount(){
+    
+  }
+
   handleClick = e => {
     this.setState({ anchorEl: e.currentTarget });
   };
@@ -47,10 +51,10 @@ class UserDropdown extends React.Component {
     return (
       <>
         <Typography style={{ marginRight: 10 }} variant="h6">
-          {user.data.name}
+          {user.data && user.data.name}
         </Typography>
         <Avatar className={classes.avatar} onClick={this.handleClick}>
-          {user.data.name ? user.data.name.substring(0, 1) : "..."}
+          {user.data && user.data.name ? user.data.name.substring(0, 1) : "..."}
         </Avatar>
 
         <Menu
@@ -60,18 +64,22 @@ class UserDropdown extends React.Component {
           open={Boolean(this.state.anchorEl)}
           onClose={this.handleClose}
         >
-          <MenuItem onClick={() => history.push("/myticket")}>
-            <ListItemIcon>
-              <ConfirmationNumberOutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Tiket Saya" />
-          </MenuItem>
-          <MenuItem onClick={() => history.push("/myticket")}>
-            <ListItemIcon>
-              <PaymentOutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Payment" />
-          </MenuItem>
+          {user.data && user.data.level == "user" ? (
+            <MenuItem onClick={() => history.push("/myticket")}>
+              <ListItemIcon>
+                <ConfirmationNumberOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Tiket Saya" />
+            </MenuItem>
+          ) : (
+            <MenuItem onClick={() => history.push("/addticket")}>
+              <ListItemIcon>
+                <ConfirmationNumberOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Tambah Tiket" />
+            </MenuItem>
+          )}
+
           <Divider />
           <MenuItem onClick={() => this.props.logout()}>
             <ListItemIcon>

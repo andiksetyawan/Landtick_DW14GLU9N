@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
 import { connect } from "react-redux";
-import { getOrders } from "../_actions/orders";
+import { getOrdersByUser } from "../_actions/orders";
+import { getAuth } from "../_actions/auth";
 
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import LensIcon from "@material-ui/icons/Lens";
@@ -124,7 +125,8 @@ class MyTicket extends Component {
   }
   componentDidMount() {
     //this.props.resetOrder();
-    this.props.getOrders();
+    
+    this.props.getOrdersByUser();
   }
 
   handlePayment = id => {
@@ -379,7 +381,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   //resetOrder: () => dispatch(resetOrder()),
-  getOrders: () => dispatch(getOrders())
+  getOrdersByUser: () => dispatch(getOrdersByUser()),
+  getAuth: () => dispatch(getAuth())
 });
 
 export default connect(

@@ -11,6 +11,8 @@ const Station = models.station;
 
 const Upload = require("../utils/upload");
 
+const uniqid = require("uniqid");
+
 exports.create = async (req, res) => {
   models.sequelize
     .transaction(async t => {
@@ -36,7 +38,7 @@ exports.create = async (req, res) => {
               _total = ticket.price * req.body.qty;
             }
             const data_order = {
-              invoice: "1234INV111111111111111111",
+              invoice: uniqid.time("INV-"),
               user_id: req.user, /////GANTI
               total: _total
             };
@@ -44,7 +46,7 @@ exports.create = async (req, res) => {
 
             const data_detail_order = [
               {
-                code: "BOO1260",
+                code: uniqid.time("BO-"),
                 order_id: order.id,
                 ticket_id: req.body.departure, //departure ticket id
                 qty: req.body.qty
@@ -53,7 +55,7 @@ exports.create = async (req, res) => {
 
             if (req.body.return) {
               data_detail_order.push({
-                code: "BOO1261",
+                code: uniqid.time("BO-"),
                 order_id: order.id,
                 ticket_id: req.body.return, //departure ticket id
                 qty: req.body.qty
@@ -280,6 +282,91 @@ exports.showsByUser = async (req, res) => {
     const orders = await Order.findAll({
       order: [["createdAt", "DESC"]],
       where: { user_id: req.user },
+      include: [
+        {
+          model: DetailOrder,
+          include: [
+            {
+              model: Ticket,
+              include: [
+                {
+                  model: Train
+                  // as: "spesies"
+                  //  attributes: ["id", "name"]
+                },
+                {
+                  model: Class
+                  // as: "spesies"
+                  //  attributes: ["id", "name"]
+                },
+                {
+                  model: Station,
+                  as: "startStation"
+                  // attributes: ["id", "name"]
+                },
+                {
+                  model: Station,
+                  as: "destinationStation"
+                  // attributes: ["id", "name"]
+                }
+              ]
+              // as: "spesies"
+              //  attributes: ["id", "name"]
+            }
+          ]
+          // as: "spesies"
+          //  attributes: ["id", "name"]
+        },
+        {
+          model: User
+          // as: "user"
+          //  attributes: ["id", "name", "address", "phone"]
+        },
+        {
+          model: Passenger
+          // as: "user"
+          //  attributes: ["id", "name", "address", "phone"]
+        }
+      ]
+
+      // through: {
+      //   model: DetailOrder,
+      //   // where: { is_done: false },
+      //   // attributes: { exclude: ["createdAt", "updatedAt"] }
+      // }
+      // attributes: {
+      //   exclude: ["train_id", "start_station_id", "destination_station_id"]
+      // }
+    });
+    if (orders) {
+      res.json({
+        success: true,
+        message: "Ticket was successfully loaded",
+        data: orders
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Ticket Train data failed",
+        data: {}
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({
+      success: false,
+      message: "Load Ticket data failed, something went wrong",
+      data: {}
+    });
+  }
+};
+
+exports.shows = async (req, res) => {
+  //const { id } = req.params;
+  console.log("req", req.user);
+  try {
+    const orders = await Order.findAll({
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: DetailOrder,

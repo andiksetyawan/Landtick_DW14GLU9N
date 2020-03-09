@@ -7,7 +7,7 @@ exports.show = async (req, res) => {
   try {
     const user = await User.findOne({
       where: { id: req.user },
-      attributes: { exclude: ["password", "level"] }
+      attributes: { exclude: ["password"] }
     });
     if (user) {
       res.json({
