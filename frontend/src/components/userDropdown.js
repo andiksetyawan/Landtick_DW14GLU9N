@@ -14,6 +14,7 @@ import {
 import ConfirmationNumberOutlinedIcon from "@material-ui/icons/ConfirmationNumberOutlined";
 import PaymentOutlinedIcon from "@material-ui/icons/PaymentOutlined";
 import ExitToAppOutlinedIcon from "@material-ui/icons/ExitToAppOutlined";
+import ReceiptIcon from '@material-ui/icons/Receipt';
 
 import { connect } from "react-redux";
 import { logout } from "../_actions/auth";
@@ -71,13 +72,19 @@ class UserDropdown extends React.Component {
               </ListItemIcon>
               <ListItemText primary="Tiket Saya" />
             </MenuItem>
-          ) : (
+          ) : (<>
             <MenuItem onClick={() => history.push("/addticket")}>
               <ListItemIcon>
                 <ConfirmationNumberOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText primary="Tambah Tiket" />
             </MenuItem>
+            <MenuItem onClick={() => history.push("/admin")}>
+            <ListItemIcon>
+              <ReceiptIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Daftar Transaksi" />
+          </MenuItem></>
           )}
 
           <Divider />

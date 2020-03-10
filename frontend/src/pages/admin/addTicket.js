@@ -84,15 +84,15 @@ class AddTicket extends React.Component {
       //CALL ALERT
       this.setState({
         message: "Berhasil menambahkan tiket baru",
-        train_id: null,
-        class_id: null,
-        dateStart: null,
-        stationStart: null,
-        startTime: null,
-        destinationStation: null,
-        arrivalTime: null,
-        price: null,
-        qty: null
+        // train_id: null,
+        // class_id: null,
+        // dateStart: null,
+        // stationStart: null,
+        // startTime: null,
+        // destinationStation: null,
+        // arrivalTime: null,
+        // price: null,
+        // qty: null
       });
     }
   };
