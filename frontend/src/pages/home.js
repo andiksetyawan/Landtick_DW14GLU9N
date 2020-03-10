@@ -294,7 +294,14 @@ class Home extends Component {
                         <Avatar
                           // style={{ flex: 1, margin: 10, minWidth: 40 }}
                           className={classes.avatarButton}
-                          onClick={() => alert("sd")}
+                          onClick={() => {
+                            this.setState({
+                              destination_station_id: this.state
+                                .start_station_id,
+                              start_station_id: this.state
+                                .destination_station_id
+                            });
+                          }}
                         >
                           <SwapHorizRoundedIcon />
                         </Avatar>
@@ -305,6 +312,8 @@ class Home extends Component {
                         </Typography>
 
                         <Autocomplete
+                        //defaultValue={}
+                       //   value={stations.data[0]}
                           options={stations.data}
                           getOptionLabel={option =>
                             `${option.name} - ${option.city} (${option.code})`
