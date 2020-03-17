@@ -30,6 +30,6 @@ const reducers = combineReducers({
   tickets
 });
 
-const store = createStore(reducers, applyMiddleware(promise /*logger*/));
+const store = createStore(reducers, applyMiddleware(promise, logger));
 
 export default store;

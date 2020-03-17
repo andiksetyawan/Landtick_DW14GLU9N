@@ -22,6 +22,7 @@ import {
 } from "@material-ui/core";
 
 import { withRouter } from "react-router-dom";
+import LoginModal from "../components/loginModal";
 
 import Alert from "@material-ui/lab/Alert";
 
@@ -124,6 +125,7 @@ const styles = theme => ({
 class Home extends Component {
   constructor(props) {
     super(props);
+    this.child = React.createRef();
     this.state = {
       step: 0, //stepper pilih tiket pergi ke pulang
       pp: false,
@@ -132,7 +134,8 @@ class Home extends Component {
       adult: 1,
       infant: 0,
       start_station: null,
-      destination_station: null
+      destination_station: null,
+      isopen: false //loginModal
     };
   }
 
@@ -141,22 +144,35 @@ class Home extends Component {
     this.props.getStations();
   }
 
+  handleClose = () => {
+    this.setState({ isopen: false });
+  };
+
   handleCariTiket = e => {
-//    alert("cari tiket");
-    this.setState({ step: 0 });
-    const data = {
-      start_station_id: this.state.start_station.id,
-      destination_station_id: this.state.destination_station.id,
-      startTime: moment(this.state.pergi).format("YYYY-MM-DD hh:mm:ss"),
-      qty: this.state.adult
-      // passenger
-    };
+    //    alert("cari tiket");
+    if (!this.state.start_station || !this.state.destination_station) {
+      //alert("Pilih stasiun keberangakatan dan tujuan");
+    } else {
+      if (this.props.auth && !this.props.auth.authenticated) {
+        // alert("Login dulu cuy.");
+        this.setState({ isopen: true });
+      } else {
+        this.setState({ step: 0 });
+        const data = {
+          start_station_id: this.state.start_station.id,
+          destination_station_id: this.state.destination_station.id,
+          startTime: moment(this.state.pergi).format("YYYY-MM-DD hh:mm:ss"),
+          qty: this.state.adult
+          // passenger
+        };
 
-    console.log("dataa", data);
+        console.log("dataa", data);
 
-    const query = queryString.stringify(data);
-    console.log("query", query);
-    this.props.getSearch(query);
+        const query = queryString.stringify(data);
+        console.log("query", query);
+        this.props.getSearch(query);
+      }
+    }
   };
 
   handleBookingDeparture = async (e, data) => {
@@ -478,6 +494,12 @@ class Home extends Component {
                             >
                               CARI TIKET
                             </Button>
+                            {!this.props.auth.authenticated && (
+                              <LoginModal
+                                open={this.state.isopen}
+                                onClose={this.handleClose}
+                              />
+                            )}
                           </Grid>
                         </Grid>
                       </div>
@@ -692,7 +714,8 @@ const mapStateToProps = state => {
   return {
     tickets: state.tickets,
     stations: state.station,
-    search: state.search
+    search: state.search,
+    auth: state.auth
     // carts: state.carts
   };
 };
