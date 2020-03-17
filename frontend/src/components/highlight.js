@@ -77,7 +77,7 @@ class Highlight extends React.Component {
                   <img src="https://tvlk.imgix.net/imageResource/2020/02/15/1581736413932-bbc272cea2d5f5a9e312c51119a063ae.jpeg?auto=compress%2Cformat&cs=srgb&fm=pjpg&ixlib=java-1.1.12&q=75" />
                   <img src="https://ecs7.tokopedia.net/img/blog/promo/2019/11/Feature-Image-940x339-63.jpg" />
                   <img src="https://ecs7.tokopedia.net/img/blog/promo/2020/02/Internal-Featured-Image-940x339.jpg" />
-                  <img src="/assets/traiin.jpg" />
+                  {/* <img src="/assets/traiin.jpg" /> */}
                 </Carousel>
               </div>
             </Grid>

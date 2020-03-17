@@ -124,7 +124,10 @@ class Admin extends React.Component {
                         >
                           <DeleteOutlineRoundedIcon />
                         </IconButton> */}
-                          <DetailOrder order={row} />
+                          <DetailOrder
+                            order={row}
+                            onRefresh={this.refreshOrder}
+                          />
                           <EditOrder
                             onRefresh={this.refreshOrder}
                             order={row}

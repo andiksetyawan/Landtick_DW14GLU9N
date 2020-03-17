@@ -118,7 +118,7 @@ class Payment extends Component {
       let path_img = null;
       if (this.props.order.data.proof_transfer) {
         path_img =
-          "http://localhost:5000/assets/img/" +
+          `${process.env.REACT_APP_BASE_BACKEND_URL}/assets/img/` +
           this.props.order.data.proof_transfer;
       }
       this.setState({ preview: path_img });
@@ -131,7 +131,7 @@ class Payment extends Component {
       const res = await this.props.updateProofOrder(this.state.image, id);
       if (res.action.type == "UPDATE_ORDER_FULFILLED") {
         //show alert klik myticket
-        // this.props.history.push("/myticket")
+        this.props.history.push("/myticket")
       }
     }else{
       alert("Upload bukti transfer lebih dahulu.")

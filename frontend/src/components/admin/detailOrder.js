@@ -16,7 +16,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Button
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
@@ -30,6 +31,7 @@ import { toRupiah } from "indo-formatter";
 
 import { connect } from "react-redux";
 import { getOrder } from "../../_actions/order";
+import { updateOrder } from "../../_actions/order";
 
 const startStepIcons = () => <RadioButtonUncheckedIcon color="primary" />;
 
@@ -94,8 +96,7 @@ class DetailOrder extends React.Component {
 
   componentDidMount() {
     // alert(this.props.id);
-   // this.props.onRefresh("ssas");
-
+    // this.props.onRefresh("ssas");
   }
 
   handleOpen = id => {
@@ -139,13 +140,58 @@ class DetailOrder extends React.Component {
             <div className={classes.logo}>landtick</div>
           </DialogTitle>
           <DialogContent style={{ textAlign: "left", marginBottom: 20 }}>
-            <div style={{ padding: 10 }}>
-              <Typography variant="h4">
-                <b>INVOICE</b>
-              </Typography>
-              <Typography variant="caption">
-                Kode Invoice : {order.invoice}
-              </Typography>
+            <div style={{ display: "flex" }}>
+              <div style={{ padding: 10, flexGrow: 1 }}>
+                <Typography variant="h4">
+                  <b>INVOICE</b>
+                </Typography>
+                <Typography variant="caption">
+                  Kode Invoice : {order.invoice}
+                </Typography>
+                <Typography variant="subtitle1">
+                  Status : {this.props.order.status}
+                </Typography>
+              </div>
+              {this.props.order.status != "cancel" && (
+                <div>
+                  <Button
+                    color="primary"
+                    size="small"
+                    variant="outlined"
+                    onClick={async () => {
+                      const data = { status: "approved" };
+                      const res = await this.props.updateOrder(
+                        data,
+                        this.props.order.id
+                      );
+                      if (res.action.type === "UPDATE_ORDER_FULFILLED") {
+                        //this.setState({ isopen: false });
+                        this.props.onRefresh();
+                      }
+                    }}
+                  >
+                    Approved
+                  </Button>
+                  <Button
+                    style={{ color: "red" }}
+                    size="small"
+                    variant="outlined"
+                    onClick={async () => {
+                      const data = { status: "cancel" };
+                      const res = await this.props.updateOrder(
+                        data,
+                        this.props.order.id
+                      );
+                      if (res.action.type === "UPDATE_ORDER_FULFILLED") {
+                        //  this.setState({ isopen: false });
+                        this.props.onRefresh();
+                      }
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              )}
             </div>
 
             <Grid container spacing={3}>
@@ -172,7 +218,7 @@ class DetailOrder extends React.Component {
                 {order.proof_transfer && (
                   <div className={classes.proofTransfer}>
                     <img
-                      src={`http://localhost:5000/assets/img/${order.proof_transfer}`}
+                      src={`${process.env.REACT_APP_BASE_BACKEND_URL}/assets/img/${order.proof_transfer}`}
                     />
                     <div>Payment Proof</div>
                   </div>
@@ -346,4 +392,11 @@ class DetailOrder extends React.Component {
   }
 }
 
-export default withStyles(styles)(DetailOrder);
+const mapDispatchToProps = dispatch => ({
+  updateOrder: (data, id) => dispatch(updateOrder(data, id))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(withStyles(styles)(DetailOrder));

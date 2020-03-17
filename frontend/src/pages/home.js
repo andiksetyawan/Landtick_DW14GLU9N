@@ -131,8 +131,8 @@ class Home extends Component {
       pulang: moment().add(1, "days"),
       adult: 1,
       infant: 0,
-      start_station_id: null,
-      destination_station_id: null
+      start_station: null,
+      destination_station: null
     };
   }
 
@@ -142,11 +142,11 @@ class Home extends Component {
   }
 
   handleCariTiket = e => {
-    alert("cari tiket");
+//    alert("cari tiket");
     this.setState({ step: 0 });
     const data = {
-      start_station_id: this.state.start_station_id,
-      destination_station_id: this.state.destination_station_id,
+      start_station_id: this.state.start_station.id,
+      destination_station_id: this.state.destination_station.id,
       startTime: moment(this.state.pergi).format("YYYY-MM-DD hh:mm:ss"),
       qty: this.state.adult
       // passenger
@@ -180,8 +180,8 @@ class Home extends Component {
     if (this.state.pp) {
       console.log("PP PPP PP PP");
       const data = {
-        start_station_id: this.state.destination_station_id,
-        destination_station_id: this.state.start_station_id,
+        start_station_id: this.state.destination_station.id,
+        destination_station_id: this.state.start_station.id,
         startTime: moment(this.state.pulang).format("YYYY-MM-DD hh:mm:ss"),
         qty: this.state.adult
         // passenger
@@ -262,18 +262,19 @@ class Home extends Component {
                           <b>Asal</b>
                         </Typography>
                         <Autocomplete
+                          value={this.state.start_station}
                           options={stations.data}
                           onChange={(e, value) => {
                             console.log("vvv", value);
-                            if (value) {
-                              this.setState({
-                                start_station_id: value.id
-                              });
-                            } else {
-                              this.setState({
-                                start_station_id: value //NULL
-                              });
-                            }
+                            // if (value) {
+                            this.setState({
+                              start_station: value
+                            });
+                            // } else {
+                            //   this.setState({
+                            //     start_station_id: value //NULL
+                            //   });
+                            // }
                           }}
                           getOptionLabel={option =>
                             `${option.name} - ${option.city} (${option.code})`
@@ -296,11 +297,14 @@ class Home extends Component {
                           className={classes.avatarButton}
                           onClick={() => {
                             this.setState({
-                              destination_station_id: this.state
-                                .start_station_id,
-                              start_station_id: this.state
-                                .destination_station_id
+                              destination_station: this.state.start_station,
+                              start_station: this.state.destination_station
                             });
+
+                            console.log(
+                              this.state.destination_station,
+                              this.state.start_station
+                            );
                           }}
                         >
                           <SwapHorizRoundedIcon />
@@ -312,8 +316,8 @@ class Home extends Component {
                         </Typography>
 
                         <Autocomplete
-                        //defaultValue={}
-                       //   value={stations.data[0]}
+                          //defaultValue={}
+                          value={this.state.destination_station}
                           options={stations.data}
                           getOptionLabel={option =>
                             `${option.name} - ${option.city} (${option.code})`
@@ -321,15 +325,15 @@ class Home extends Component {
                           // style={{ width: 300 }}
                           onChange={(e, value) => {
                             console.log("vvv", value);
-                            if (value) {
-                              this.setState({
-                                destination_station_id: value.id
-                              });
-                            } else {
-                              this.setState({
-                                destination_station_id: value //NULL
-                              });
-                            }
+                            // if (value) {
+                            this.setState({
+                              destination_station: value
+                            });
+                            // } else {
+                            //   this.setState({
+                            //     destination_station_id: value //NULL
+                            //   });
+                            // }
                           }}
                           renderInput={params => (
                             <TextField

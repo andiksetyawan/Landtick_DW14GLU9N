@@ -1,7 +1,7 @@
 import { API, setAuthToken } from "../config/api";
 
 export const login = data => {
-  console.log("data action login", data);
+  // console.log("data action login", data);
   return {
     type: "LOGIN",
     payload: async () => {

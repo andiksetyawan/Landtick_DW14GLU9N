@@ -15,7 +15,6 @@ import orders from "../_reducers/orders";
 import detail_order from "../_reducers/detail_order";
 import tickets from "../_reducers/tickets";
 
-
 const reducers = combineReducers({
   auth,
   user,
@@ -31,6 +30,6 @@ const reducers = combineReducers({
   tickets
 });
 
-const store = createStore(reducers, applyMiddleware(promise, logger));
+const store = createStore(reducers, applyMiddleware(promise /*logger*/));
 
 export default store;
