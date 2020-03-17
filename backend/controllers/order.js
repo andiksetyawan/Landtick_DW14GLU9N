@@ -291,12 +291,10 @@ exports.showsByUser = async (req, res) => {
               include: [
                 {
                   model: Train
-                  // as: "spesies"
                   //  attributes: ["id", "name"]
                 },
                 {
                   model: Class
-                  // as: "spesies"
                   //  attributes: ["id", "name"]
                 },
                 {
@@ -310,33 +308,20 @@ exports.showsByUser = async (req, res) => {
                   // attributes: ["id", "name"]
                 }
               ]
-              // as: "spesies"
               //  attributes: ["id", "name"]
             }
           ]
-          // as: "spesies"
           //  attributes: ["id", "name"]
         },
         {
           model: User
-          // as: "user"
           //  attributes: ["id", "name", "address", "phone"]
         },
         {
           model: Passenger
-          // as: "user"
           //  attributes: ["id", "name", "address", "phone"]
         }
       ]
-
-      // through: {
-      //   model: DetailOrder,
-      //   // where: { is_done: false },
-      //   // attributes: { exclude: ["createdAt", "updatedAt"] }
-      // }
-      // attributes: {
-      //   exclude: ["train_id", "start_station_id", "destination_station_id"]
-      // }
     });
     if (orders) {
       res.json({
