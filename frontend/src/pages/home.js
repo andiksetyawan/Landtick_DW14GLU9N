@@ -18,7 +18,8 @@ import {
   TableRow,
   Select,
   MenuItem,
-  FormControl
+  FormControl,
+  Hidden
 } from "@material-ui/core";
 
 import { withRouter } from "react-router-dom";
@@ -79,7 +80,10 @@ const styles = theme => ({
     minHeight: 260
   },
   buyTicket: {
-    marginTop: "-80px"
+    marginTop: "-80px",
+    [theme.breakpoints.down("xs")]: {
+      marginTop: "-10px"
+    }
   },
   menu: {
     display: "flex",
@@ -272,8 +276,9 @@ class Home extends Component {
                     <Typography color="primary" variant="h5">
                       <b>Tiket Kereta Api</b>
                     </Typography>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <div style={{ flex: 10 }}>
+
+                    <Grid container spacing={0}>
+                      <Grid item xs={12} sm={5}>
                         <Typography variant="subtitle1">
                           <b>Asal</b>
                         </Typography>
@@ -281,16 +286,9 @@ class Home extends Component {
                           value={this.state.start_station}
                           options={stations.data}
                           onChange={(e, value) => {
-                            console.log("vvv", value);
-                            // if (value) {
                             this.setState({
                               start_station: value
                             });
-                            // } else {
-                            //   this.setState({
-                            //     start_station_id: value //NULL
-                            //   });
-                            // }
                           }}
                           getOptionLabel={option =>
                             `${option.name} - ${option.city} (${option.code})`
@@ -304,52 +302,49 @@ class Home extends Component {
                             />
                           )}
                         />
-                      </div>
-
-                      <div style={{ flex: 1, margin: 10, minWidth: 40 }}>
-                        <br />
-                        <Avatar
-                          // style={{ flex: 1, margin: 10, minWidth: 40 }}
-                          className={classes.avatarButton}
-                          onClick={() => {
-                            this.setState({
-                              destination_station: this.state.start_station,
-                              start_station: this.state.destination_station
-                            });
-
-                            console.log(
-                              this.state.destination_station,
-                              this.state.start_station
-                            );
+                      </Grid>
+                      <Hidden xsDown>
+                        <Grid
+                          item
+                          xs={1}
+                          sm={2}
+                          style={{
+                            display: "flex",
+                            alignItems: "flex-end",
+                            justifyContent: "center"
                           }}
                         >
-                          <SwapHorizRoundedIcon />
-                        </Avatar>
-                      </div>
-                      <div style={{ flex: 10 }}>
+                          {/* <br/> */}
+                          <Avatar
+                            className={classes.avatarButton}
+                            onClick={() => {
+                              this.setState({
+                                destination_station: this.state.start_station,
+                                start_station: this.state.destination_station
+                              });
+                            }}
+                          >
+                            <SwapHorizRoundedIcon />
+                          </Avatar>
+                        </Grid>
+                      </Hidden>
+
+                      <Grid item xs={12} sm={5}>
                         <Typography variant="subtitle1">
                           <b>Tujuan</b>
                         </Typography>
 
                         <Autocomplete
-                          //defaultValue={}
                           value={this.state.destination_station}
                           options={stations.data}
                           getOptionLabel={option =>
                             `${option.name} - ${option.city} (${option.code})`
                           }
-                          // style={{ width: 300 }}
                           onChange={(e, value) => {
                             console.log("vvv", value);
-                            // if (value) {
                             this.setState({
                               destination_station: value
                             });
-                            // } else {
-                            //   this.setState({
-                            //     destination_station_id: value //NULL
-                            //   });
-                            // }
                           }}
                           renderInput={params => (
                             <TextField
@@ -360,11 +355,9 @@ class Home extends Component {
                             />
                           )}
                         />
-                      </div>
-                    </div>
+                      </Grid>
 
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <div style={{ flex: 10 }}>
+                      <Grid item xs={12} sm={5}>
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <Typography
                             display="inline"
@@ -417,12 +410,11 @@ class Home extends Component {
                             )}
                           </div>
                         </MuiPickersUtilsProvider>
-                      </div>
-
-                      <div style={{ flex: 1, margin: 10, minWidth: 40 }}></div>
-                      <div style={{ flex: 10, display: "flex" }}>
-                        <Grid container spacing={3}>
-                          <Grid item xs={4}>
+                      </Grid>
+                      <Grid item xs={1} sm={2}></Grid>
+                      <Grid item xs={12} sm={5}>
+                        <Grid container spacing={1}>
+                          <Grid item xs={12} sm={6} md={4}>
                             <Typography
                               variant="subtitle1"
                               style={{ marginTop: 15 }}
@@ -450,16 +442,17 @@ class Home extends Component {
                             </FormControl>
                           </Grid>
 
-                          <Grid item xs={4}>
+                          <Grid item xs={12} sm={6} md={4}>
                             <Typography
                               variant="subtitle1"
                               style={{ marginTop: 15 }}
                             >
                               <b>Bayi</b>
-                              <span style={{ fontSize: 10 }}>
-                                {" "}
-                                Dibawah 3 tahun
-                              </span>
+                              <Hidden only="md">
+                                <span style={{ fontSize: 10 }}>
+                                  {` < 3 tahun`}
+                                </span>
+                              </Hidden>
                             </Typography>
                             <FormControl
                               variant="outlined"
@@ -480,17 +473,19 @@ class Home extends Component {
                             </FormControl>
                           </Grid>
 
-                          <Grid item xs={4}>
-                            <Typography
-                              variant="subtitle1"
-                              style={{ marginTop: 8 }}
-                            ></Typography>
-                            <br />
-                            <br />
+                          <Grid
+                            item
+                            xs={12}
+                            sm={12}
+                            md={4}
+                            style={{ display: "flex", alignItems: "flex-end" }}
+                          >
                             <Button
                               onClick={this.handleCariTiket}
                               variant="contained"
                               color="primary"
+                              fullWidth
+                              style={{ marginBottom: 2 }}
                             >
                               CARI TIKET
                             </Button>
@@ -502,8 +497,8 @@ class Home extends Component {
                             )}
                           </Grid>
                         </Grid>
-                      </div>
-                    </div>
+                      </Grid>
+                    </Grid>
                   </div>
                 </Grid>
               </Grid>
